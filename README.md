@@ -62,6 +62,7 @@ sudo apt install build-essential nasm qemu gcc make
 ```
 ### - BUILD
 make clean
+
 make
 ### - RUN
 make run
