@@ -61,7 +61,7 @@ make run
 ### Expected Output
 Welcome to MiniKernel  
 Let's get started!
-### Git Flow
+## Git Flow
 
 This project follows Git Flow methodology:
 
@@ -75,7 +75,7 @@ release/* → version preparation
 
 hotfix/* → urgent fixes
 
-### Version Plan
+## Version Plan
 
 v1.0 → Boot + screen output
 
@@ -83,7 +83,7 @@ v1.1 → Keyboard input handling
 
 v2.0 → Mini shell system (help, clear, echo, version)
 
-### Next Steps
+## Next Steps
 
 Keyboard input handling (v1.1) - 
 Real-time typing support - 
@@ -93,7 +93,8 @@ clear
 echo
 version - 
 Command interpreter loop
-### Learning Outcomes
+
+## Learning Outcomes
 
 Understanding OS boot process
 
@@ -105,6 +106,6 @@ Git Flow workflow
 
 QEMU system emulation
 
-### Author
+## Author
 
 Student Hiba Project – Mini Kernel (2026 OS Challenge)
