@@ -60,30 +60,30 @@ include/ → Header files
 sudo apt update
 sudo apt install build-essential nasm qemu gcc make
 ```
-#  How to Compile
+##  How to Compile
 make
-#  How to Run
+##  How to Run
 make run
-#  Example Output
+###  Example Output
 Welcome to MiniKernel
 Let's get started!
-#  Git Flow
+##  Git Flow
 main → stable production version
 develop → development branch
 feature/* → new features
 release/* → version preparation
 hotfix/* → urgent fixes
-# Versioning
+### Versioning
 v1.0 → Boot + VGA output
 v1.1 → Keyboard input (next step)
 v2.0 → Mini shell system
-#  Next Steps
+###  Next Steps
 Keyboard input handling
 Real-time typing support
 Mini shell (help, clear, echo, version)
 Command interpreter
 
-# Author
+### Author
 
 Student Hiba Project
 2026 OS Development Challenge
