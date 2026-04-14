@@ -22,11 +22,12 @@ keyboard.o:
 idt.o:
 	$(CC) $(CFLAGS) -c drivers/idt.c -o idt.o
 
-kernel.elf: entry.o kernel.o screen.o keyboard.o idt.o
-	$(LD) $(LDFLAGS) entry.o kernel.o screen.o keyboard.o idt.o -o kernel.elf
-
+kernel.elf: entry.o kernel.o screen.o keyboard.o idt.o string.o
+	$(LD) $(LDFLAGS) entry.o kernel.o screen.o keyboard.o idt.o string.o -o kernel.elf
 run:
 	qemu-system-i386 -kernel kernel.elf
 
 clean:
 	rm -f *.o *.elf
+string.o:
+	$(CC) $(CFLAGS) -c lib/string.c -o string.o

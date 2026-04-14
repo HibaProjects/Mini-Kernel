@@ -1,8 +1,6 @@
 #include "screen.h"
+#include "string.h"
 
-/* =========================
-   PORT INPUT
-   ========================= */
 static unsigned char inb(unsigned short port) {
     unsigned char value;
     __asm__ volatile ("inb %1, %0" : "=a"(value) : "Nd"(port));
@@ -25,6 +23,12 @@ static int len = 0;
 static int cursor = 0;
 
 /* =========================
+   KEYBOARD STATE
+   ========================= */
+static int shift_pressed = 0;
+static int caps_lock = 0;
+
+/* =========================
    CLEAR BUFFER
    ========================= */
 void clear_buffer() {
@@ -39,7 +43,6 @@ void clear_buffer() {
    PROMPT
    ========================= */
 void print_prompt() {
-
     print("\nminiHibaKernel> ");
 }
 
@@ -54,7 +57,7 @@ void cmd_help() {
 }
 
 void cmd_version() {
-    print("\nMiniKernel v1.2 (shell edition)");
+    print("\nMiniKernel v1.2 (Boucle Infinie)");
 }
 
 void cmd_clear() {
@@ -78,8 +81,7 @@ void execute_command(char *cmd) {
 
     if (cmd[0] == 0)
         return;
-
-    if (cmd[0]=='h') cmd_help();
+    if (strcmp(cmd, "help") == 0) cmd_help();
     else if (cmd[0]=='c') cmd_clear();
     else if (cmd[0]=='v') cmd_version();
     else if (cmd[0]=='e') cmd_echo(cmd);
@@ -91,8 +93,8 @@ void execute_command(char *cmd) {
    ========================= */
 void kernel_main() {
 
-    print_center("MiniKernel v1.3");
-    print("\nCursor-enabled shell");
+    print_center("MiniKernel v1.4");
+    print("\nCursor + Shift + CapsLock");
 
     print_prompt();
 
@@ -105,12 +107,34 @@ void kernel_main() {
         unsigned char scancode = inb(0x60);
 
         /* =========================
+           SHIFT + CAPS HANDLING
+           ========================= */
+
+        /* SHIFT press */
+        if (scancode == 0x2A || scancode == 0x36) {
+            shift_pressed = 1;
+            continue;
+        }
+
+        /* SHIFT release */
+        if (scancode == 0xAA || scancode == 0xB6) {
+            shift_pressed = 0;
+            continue;
+        }
+
+        /* CAPS LOCK toggle */
+        if (scancode == 0x3A) {
+            caps_lock = !caps_lock;
+            continue;
+        }
+
+        /* =========================
            ARROW KEYS
            ========================= */
         if (scancode == 0x4B) { // LEFT
             if (cursor > 0) {
                 cursor--;
-                move_cursor(cursor + 80); // basic visual offset
+                move_cursor(cursor + 80);
             }
             continue;
         }
@@ -180,6 +204,33 @@ void kernel_main() {
             continue;
 
         /* =========================
+           APPLY SHIFT / CAPS
+           ========================= */
+
+        /* letters */
+        if (c >= 'a' && c <= 'z') {
+            if ((shift_pressed && !caps_lock) || (!shift_pressed && caps_lock)) {
+                c = c - 32;
+            }
+        }
+
+        /* numbers → symbols when shift */
+        if (shift_pressed) {
+            switch (c) {
+                case '1': c = '!'; break;
+                case '2': c = '@'; break;
+                case '3': c = '#'; break;
+                case '4': c = '$'; break;
+                case '5': c = '%'; break;
+                case '6': c = '^'; break;
+                case '7': c = '&'; break;
+                case '8': c = '*'; break;
+                case '9': c = '('; break;
+                case '0': c = ')'; break;
+            }
+        }
+
+        /* =========================
            ENTER
            ========================= */
         if (c == '\n') {
@@ -211,7 +262,7 @@ void kernel_main() {
         }
 
         /* =========================
-           INSERT CHAR (MIDDLE SUPPORT)
+           INSERT CHAR
            ========================= */
         else {
 
