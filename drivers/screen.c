@@ -1,54 +1,65 @@
 #include "screen.h"
 
-#define VIDEO_MEMORY (char*)0xB8000
-#define GREEN 0x02
+static int index = 0;
+static int input_start = 0;   
 
-void putstr(const char *str) {
-    char *video = VIDEO_MEMORY;
-    int row = 0, col = 0;
-    int i = 0;
-
-    while (str[i] != '\0') {
-        if (str[i] == '\n') {
-            row++;
-            col = 0;
-        } else {
-            int offset = (row * 80 + col) * 2;
-            video[offset] = str[i];
-            video[offset + 1] = GREEN;
-            col++;
-        }
-        i++;
-    }
+/* expose cursor position */
+int get_cursor_index() {
+    return index;
 }
 
-void putstr_center(const char *str) {
-    char *video = VIDEO_MEMORY;
+/* allow kernel to set start of input */
+void set_input_start(int pos) {
+    input_start = pos;
+}
+
+/* print character */
+void print_char(char c) {
+
+    char *video = (char*)0xB8000;
+
+    /* NEW LINE */
+    if (c == '\n') {
+        index += (80 - (index % 80));
+        return;
+    }
+
+    /* BACKSPACE (FIXED) */
+    if (c == '\b') {
+        if (index > input_start) {   
+            index--;
+            video[index * 2] = ' ';
+            video[index * 2 + 1] = 0x07;
+        }
+        return;
+    }
+
+    video[index * 2] = c;
+    video[index * 2 + 1] = 0x0A;
+    index++;
+}
+
+/* print string */
+void print(const char *str) {
+    for (int i = 0; str[i]; i++)
+        print_char(str[i]);
+}
+
+/* center text */
+void print_center(const char *str) {
+    int len = 0;
+    while (str[len]) len++;
 
     int row = 12;
-    int i = 0;
+    int col = (80 - len) / 2;
 
-    while (str[i] != '\0') {
-        int start = i;
-        int len = 0;
+    char *video = (char*)0xB8000;
 
-        while (str[i + len] != '\0' && str[i + len] != '\n') {
-            len++;
-        }
-
-        int col = (80 - len) / 2;
-
-        for (int j = 0; j < len; j++) {
-            int offset = (row * 80 + col + j) * 2;
-            video[offset] = str[start + j];
-            video[offset + 1] = GREEN;
-        }
-
-        i += len;
-
-        if (str[i] == '\n') {
-            row++;
-            i++;
-        }
+    for (int i = 0; i < len; i++) {
+        int pos = (row * 80 + col + i) * 2;
+        video[pos] = str[i];
+        video[pos + 1] = 0x0A;
     }
+
+    index = (row * 80 + col + len);
 }

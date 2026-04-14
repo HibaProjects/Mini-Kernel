@@ -16,8 +16,14 @@ kernel.o:
 screen.o:
 	$(CC) $(CFLAGS) -c drivers/screen.c -o screen.o
 
-kernel.elf: entry.o kernel.o screen.o
-	$(LD) $(LDFLAGS) entry.o kernel.o screen.o -o kernel.elf
+keyboard.o:
+	$(CC) $(CFLAGS) -c drivers/keyboard.c -o keyboard.o
+
+idt.o:
+	$(CC) $(CFLAGS) -c drivers/idt.c -o idt.o
+
+kernel.elf: entry.o kernel.o screen.o keyboard.o idt.o
+	$(LD) $(LDFLAGS) entry.o kernel.o screen.o keyboard.o idt.o -o kernel.elf
 
 run:
 	qemu-system-i386 -kernel kernel.elf
