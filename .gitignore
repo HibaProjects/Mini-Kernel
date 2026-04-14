@@ -1,0 +1,11 @@
+# build files
+*.o
+*.elf
+*.bin
+
+# QEMU / OS output
+os-image.bin
+kernel.bin
+
+# system junk
+*.log
