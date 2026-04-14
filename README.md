@@ -60,9 +60,9 @@ include/ → Header files
 sudo apt update
 sudo apt install build-essential nasm qemu gcc make
 ```
-##  How to Compile
+###  How to Compile
 make
-##  How to Run
+###  How to Run
 make run
 ###  Example Output
 Welcome to MiniKernel
