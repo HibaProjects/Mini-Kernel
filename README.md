@@ -25,6 +25,7 @@ It runs in a simulated environment (QEMU) and demonstrates fundamental operating
 
 
 Welcome to MiniKernel
+
 Let's get started!
  
 
