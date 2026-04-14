@@ -42,9 +42,13 @@ Let's get started!
 
 
 boot/ → Bootloader / entry point (Assembly)
+
 kernel/ → Core kernel logic (C)
+
 drivers/ → Screen, keyboard drivers
+
 lib/ → Utility functions
+
 include/ → Header files
 
 
