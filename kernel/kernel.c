@@ -9,7 +9,7 @@ static unsigned char inb(unsigned short port) {
 
 void kernel_main() {
 
-    print_center("MiniKernel Ready");
+    print_center("Welcome to MiniKernel");
     print("\nType something:\n");
 
     set_input_start(get_cursor_index());
@@ -49,7 +49,7 @@ void kernel_main() {
 
         char c = 0;
 
-        /* XOR logic */
+        /* final case: shift XOR caps */
         int upper = shift ^ caps;
 
         switch (scancode) {
@@ -82,7 +82,7 @@ void kernel_main() {
             case 0x15: c = upper ? 'Y' : 'y'; break;
             case 0x2C: c = upper ? 'Z' : 'z'; break;
 
-            /* numbers + SHIFT symbols */
+            /* numbers + shift symbols */
             case 0x02: c = shift ? '!' : '1'; break;
             case 0x03: c = shift ? '@' : '2'; break;
             case 0x04: c = shift ? '#' : '3'; break;
