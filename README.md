@@ -1,37 +1,75 @@
+Mini-Kernel (Unix Inspired OS)
 
-# Mini-Kernel (Unix Inspired)
+Version: v1.0
 
-##  Description
-This project is a minimal 32-bit educational kernel written in C and Assembly.
-It runs in QEMU and demonstrates basic OS concepts like booting, VGA output, and system structure.
+Description
 
----
+This project is a minimal 32-bit educational operating system kernel written in C and Assembly.
 
-## Features (Current Stage)
+It runs in a simulated environment (QEMU) and demonstrates fundamental operating system concepts such as:
 
-- Bootloader using Assembly (entry.asm)
-- Kernel written in C
-- VGA text output (screen driver)
-- Basic system initialization
-- Makefile build system
-- Runs in QEMU emulator
+Boot process
+Memory layout
+VGA text mode output
+Low-level system initialization
+Features (Current Stage)
 
----
+4.1 System Boot
+Kernel boots successfully in QEMU
+Displays welcome message:
+Welcome to MiniKernel
+Let's get started!
 
-##  Project Structure
+4.2 Screen Output
+VGA text mode driver
+Print strings to screen
+Supports newline (\n)
+Basic colored text output (green)
 
-boot/      -> bootloader code  
-kernel/    -> main kernel logic  
-drivers/   -> screen / keyboard drivers  
-lib/       -> utility functions  
-include/   -> header files  
+Project Structure
 
----
+boot/ → Bootloader / entry point (Assembly)
+kernel/ → Core kernel logic (C)
+drivers/ → Screen, keyboard drivers
+lib/ → Utility functions
+include/ → Header files
 
-## Requirements
+Requirements
 
-Install dependencies:
-
-```bash
 sudo apt update
-sudo apt install build-essential nasm qemu make gcc
+sudo apt install build-essential nasm qemu gcc make
+
+How to Compile
+
+make
+
+How to Run
+
+make run
+
+Example Output
+
+Welcome to MiniKernel
+Let's get started!
+
+Git Flow
+main → stable production version
+develop → development branch
+feature/* → new features
+release/* → version preparation
+hotfix/* → urgent fixes
+
+Versioning
+v1.0 → Boot + VGA output
+v1.1 → Keyboard input (next step)
+v2.0 → Mini shell system
+
+Next Steps
+Keyboard input handling
+Real-time typing support
+Mini shell (help, clear, echo, version)
+Command interpreter
+
+Author
+
+Student Hiba Project - 2026 OS Development Challenge
