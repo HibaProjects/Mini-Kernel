@@ -24,9 +24,8 @@ It runs in a simulated environment (QEMU) and demonstrates fundamental operating
 - Displays welcome message:
 
 
-Welcome to MiniKernel
-
-Let's get started!
+Welcome to MiniKernel 
+(new line)Let's get started!
  
 
 ---
