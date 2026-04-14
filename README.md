@@ -1,10 +1,14 @@
 # Mini-Kernel (Unix Inspired OS)
 
-Version: v1.0
+## Versioning
+
+- v1.0 → Boot + VGA output (STABLE)
+- v1.1 → Keyboard input (IN PROGRESS)
+- v2.0 → Mini shell system (PLANNED)
 
 ---
 
-##  Description
+## Description
 
 This project is a minimal 32-bit educational operating system kernel written in C and Assembly.
 
@@ -17,84 +21,89 @@ It runs in a simulated environment (QEMU) and demonstrates fundamental operating
 
 ---
 
-## Features (Current Stage)
+## Features
 
-### 4.1 System Boot
-- Kernel boots successfully in QEMU
-- Displays welcome message:
+### Boot System
+- Kernel starts successfully in QEMU
+- Displays welcome message
 
-
-Welcome to MiniKernel 
-(it's a new line)Let's get started!
- 
-
----
-
-###  4.2 Screen Output
+### Screen Output
 - VGA text mode driver
 - Print strings to screen
-- Supports newline (`\n`)
+- Supports newline (\n)
 - Basic colored text output (green)
 
 ---
 
-##  Project Structure
+## Project Structure
 
-
-boot/ → Bootloader / entry point (Assembly)
-
-kernel/ → Core kernel logic (C)
-
-drivers/ → Screen, keyboard drivers
-
-lib/ → Utility functions
-
-include/ → Header files
-
+- boot/       → Bootloader / entry point (Assembly)
+- kernel/     → Core kernel logic (C)
+- drivers/    → Screen and keyboard drivers
+- lib/        → Utility functions
+- include/    → Header files
 
 ---
 
-## Requirements
+## Build & Run
 
+### Install dependencies
 ```bash
 sudo apt update
 sudo apt install build-essential nasm qemu gcc make
 ```
-### - BUILD
+## Build project
 make clean
-
 make
-### - RUN
+## Run in QEMU
 make run
-### * Example Output
-Welcome to MiniKernel
-(it's a new line)Let's get started!
-##  Git Flow
+### Expected Output
+Welcome to MiniKernel  
+Let's get started!
+### Git Flow
+
+This project follows Git Flow methodology:
+
 main → stable production version
 
-develop → development branch
+develop → integration branch
 
-feature/* → new features
+feature/* → feature development
 
 release/* → version preparation
 
 hotfix/* → urgent fixes
 
-### Versioning
-v1.0 → Boot + VGA output
+### Version Plan
 
-v1.1 → Keyboard input (next step)
+v1.0 → Boot + screen output
 
-v2.0 → Mini shell system
+v1.1 → Keyboard input handling
 
-###  Next Steps
-Keyboard input handling - 
+v2.0 → Mini shell system (help, clear, echo, version)
+
+### Next Steps
+
+Keyboard input handling (v1.1) - 
 Real-time typing support - 
-Mini shell (help, clear, echo, version)
+Mini shell implementation:
+help
+clear
+echo
+version - 
+Command interpreter loop
+### Learning Outcomes
 
-Command interpreter
+Understanding OS boot process
+
+Low-level hardware interaction (VGA + keyboard)
+
+Kernel development in C
+
+Git Flow workflow
+
+QEMU system emulation
 
 ### Author
 
-Student Hiba Project
-2026 OS Development Challenge
+Student Hiba Project – Mini Kernel (2026 OS Challenge)
