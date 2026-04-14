@@ -57,7 +57,7 @@ void cmd_help() {
 }
 
 void cmd_version() {
-    print("\nMiniKernel v1.2 (Boucle Infinie)");
+    print("\nMiniKernel v1.3 (Boucle Infinie)");
 }
 
 void cmd_clear() {
