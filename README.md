@@ -69,18 +69,27 @@ Welcome to MiniKernel
 (it's a new line)Let's get started!
 ##  Git Flow
 main → stable production version
+
 develop → development branch
+
 feature/* → new features
+
 release/* → version preparation
+
 hotfix/* → urgent fixes
+
 ### Versioning
 v1.0 → Boot + VGA output
+
 v1.1 → Keyboard input (next step)
+
 v2.0 → Mini shell system
+
 ###  Next Steps
-Keyboard input handling
-Real-time typing support
+Keyboard input handling - 
+Real-time typing support - 
 Mini shell (help, clear, echo, version)
+
 Command interpreter
 
 ### Author
