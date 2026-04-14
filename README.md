@@ -52,11 +52,11 @@ It runs in a simulated environment (QEMU) and demonstrates fundamental operating
 sudo apt update
 sudo apt install build-essential nasm qemu gcc make
 ```
-## Build project
+### Build project
 make clean
 
 make
-## Run in QEMU
+### Run in QEMU
 make run
 ### Expected Output
 Welcome to MiniKernel  
