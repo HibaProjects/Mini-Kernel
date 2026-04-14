@@ -2,10 +2,24 @@
 
 ## Versioning
 
-- v1.0 → Boot + VGA output (STABLE)
-- v1.1 → Keyboard input (IN PROGRESS)
-- v2.0 → Mini shell system (PLANNED)
+### v1.0
+- Basic kernel boot
+- VGA text output
+- Simple screen driver
 
+### v1.1
+- Keyboard input handling
+- Caps Lock + Shift support
+- Basic character mapping (letters, numbers, symbols)
+- Simple input loop
+
+### v1.2
+- Mini shell system
+- Commands: help, clear, version, echo
+- Real VGA screen scrolling
+- Improved screen driver
+- Backspace support
+- Boot centered UI
 ---
 
 ## Description
