@@ -20,6 +20,12 @@
 - Improved screen driver
 - Backspace support
 - Boot centered UI
+### v1.3
+- Advanced shell input system
+- Cursor movement (left/right arrows)
+- In-line text editing support
+- Improved command execution system
+- Keyboard driver enhancements
 ---
 
 ## Description
