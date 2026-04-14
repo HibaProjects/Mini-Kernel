@@ -25,7 +25,7 @@ It runs in a simulated environment (QEMU) and demonstrates fundamental operating
 
 
 Welcome to MiniKernel 
-(new line)Let's get started!
+(it's a new line)Let's get started!
  
 
 ---
@@ -66,7 +66,7 @@ make
 make run
 ### * Example Output
 Welcome to MiniKernel
-Let's get started!
+(it's a new line)Let's get started!
 ##  Git Flow
 main → stable production version
 develop → development branch
