@@ -7,5 +7,6 @@ void print_center(const char *str);
 
 int get_cursor_index();     
 void set_input_start(int pos);   
+void scroll_screen();
 
 #endif

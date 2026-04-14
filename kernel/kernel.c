@@ -1,21 +1,100 @@
 #include "screen.h"
 
-/* port input */
+/* =========================
+   PORT INPUT
+   ========================= */
 static unsigned char inb(unsigned short port) {
     unsigned char value;
     __asm__ volatile ("inb %1, %0" : "=a"(value) : "Nd"(port));
     return value;
 }
 
+/* =========================
+   VGA CURSOR CONTROL
+   ========================= */
+static void move_cursor(unsigned short pos) {
+    __asm__ volatile("outb %0, %1" : : "a"((unsigned char)(pos >> 8)), "Nd"(0x3D4));
+    __asm__ volatile("outb %0, %1" : : "a"((unsigned char)(pos & 0xFF)), "Nd"(0x3D5));
+}
+
+/* =========================
+   SHELL BUFFER
+   ========================= */
+static char buffer[128];
+static int len = 0;
+static int cursor = 0;
+
+/* =========================
+   CLEAR BUFFER
+   ========================= */
+void clear_buffer() {
+    for (int i = 0; i < 128; i++)
+        buffer[i] = 0;
+
+    len = 0;
+    cursor = 0;
+}
+
+/* =========================
+   PROMPT
+   ========================= */
+void print_prompt() {
+
+    print("\nminiHibaKernel> ");
+}
+
+/* =========================
+   COMMANDS
+   ========================= */
+void cmd_help() {
+    print("\nhelp - show commands");
+    print("\nclear - clear screen");
+    print("\nversion - show version");
+    print("\necho - print text");
+}
+
+void cmd_version() {
+    print("\nMiniKernel v1.2 (shell edition)");
+}
+
+void cmd_clear() {
+    unsigned short *video = (unsigned short *)0xB8000;
+
+    for (int i = 0; i < 80 * 25; i++)
+        video[i] = (0x0F << 8) | ' ';
+
+    move_cursor(0);
+}
+
+void cmd_echo(char *cmd) {
+    print("\n");
+    print(cmd + 5);
+}
+
+/* =========================
+   EXECUTOR
+   ========================= */
+void execute_command(char *cmd) {
+
+    if (cmd[0] == 0)
+        return;
+
+    if (cmd[0]=='h') cmd_help();
+    else if (cmd[0]=='c') cmd_clear();
+    else if (cmd[0]=='v') cmd_version();
+    else if (cmd[0]=='e') cmd_echo(cmd);
+    else print("\nUnknown command");
+}
+
+/* =========================
+   KERNEL MAIN
+   ========================= */
 void kernel_main() {
 
-    print_center("Welcome to MiniKernel");
-    print("\nType something:\n");
+    print_center("MiniKernel v1.3");
+    print("\nCursor-enabled shell");
 
-    set_input_start(get_cursor_index());
-
-    unsigned char shift = 0;
-    unsigned char caps = 0;
+    print_prompt();
 
     while (1) {
 
@@ -25,21 +104,22 @@ void kernel_main() {
 
         unsigned char scancode = inb(0x60);
 
-        /* SHIFT press */
-        if (scancode == 0x2A || scancode == 0x36) {
-            shift = 1;
+        /* =========================
+           ARROW KEYS
+           ========================= */
+        if (scancode == 0x4B) { // LEFT
+            if (cursor > 0) {
+                cursor--;
+                move_cursor(cursor + 80); // basic visual offset
+            }
             continue;
         }
 
-        /* SHIFT release */
-        if (scancode == 0xAA || scancode == 0xB6) {
-            shift = 0;
-            continue;
-        }
-
-        /* CAPS LOCK toggle */
-        if (scancode == 0x3A) {
-            caps = !caps;
+        if (scancode == 0x4D) { // RIGHT
+            if (cursor < len) {
+                cursor++;
+                move_cursor(cursor + 80);
+            }
             continue;
         }
 
@@ -49,71 +129,101 @@ void kernel_main() {
 
         char c = 0;
 
-        /* final case: shift XOR caps */
-        int upper = shift ^ caps;
-
         switch (scancode) {
 
             /* letters */
-            case 0x1E: c = upper ? 'A' : 'a'; break;
-            case 0x30: c = upper ? 'B' : 'b'; break;
-            case 0x2E: c = upper ? 'C' : 'c'; break;
-            case 0x20: c = upper ? 'D' : 'd'; break;
-            case 0x12: c = upper ? 'E' : 'e'; break;
-            case 0x21: c = upper ? 'F' : 'f'; break;
-            case 0x22: c = upper ? 'G' : 'g'; break;
-            case 0x23: c = upper ? 'H' : 'h'; break;
-            case 0x17: c = upper ? 'I' : 'i'; break;
-            case 0x24: c = upper ? 'J' : 'j'; break;
-            case 0x25: c = upper ? 'K' : 'k'; break;
-            case 0x26: c = upper ? 'L' : 'l'; break;
-            case 0x32: c = upper ? 'M' : 'm'; break;
-            case 0x31: c = upper ? 'N' : 'n'; break;
-            case 0x18: c = upper ? 'O' : 'o'; break;
-            case 0x19: c = upper ? 'P' : 'p'; break;
-            case 0x10: c = upper ? 'Q' : 'q'; break;
-            case 0x13: c = upper ? 'R' : 'r'; break;
-            case 0x1F: c = upper ? 'S' : 's'; break;
-            case 0x14: c = upper ? 'T' : 't'; break;
-            case 0x16: c = upper ? 'U' : 'u'; break;
-            case 0x2F: c = upper ? 'V' : 'v'; break;
-            case 0x11: c = upper ? 'W' : 'w'; break;
-            case 0x2D: c = upper ? 'X' : 'x'; break;
-            case 0x15: c = upper ? 'Y' : 'y'; break;
-            case 0x2C: c = upper ? 'Z' : 'z'; break;
+            case 0x1E: c = 'a'; break;
+            case 0x30: c = 'b'; break;
+            case 0x2E: c = 'c'; break;
+            case 0x20: c = 'd'; break;
+            case 0x12: c = 'e'; break;
+            case 0x21: c = 'f'; break;
+            case 0x22: c = 'g'; break;
+            case 0x23: c = 'h'; break;
+            case 0x17: c = 'i'; break;
+            case 0x24: c = 'j'; break;
+            case 0x25: c = 'k'; break;
+            case 0x26: c = 'l'; break;
+            case 0x32: c = 'm'; break;
+            case 0x31: c = 'n'; break;
+            case 0x18: c = 'o'; break;
+            case 0x19: c = 'p'; break;
+            case 0x10: c = 'q'; break;
+            case 0x13: c = 'r'; break;
+            case 0x1F: c = 's'; break;
+            case 0x14: c = 't'; break;
+            case 0x16: c = 'u'; break;
+            case 0x2F: c = 'v'; break;
+            case 0x11: c = 'w'; break;
+            case 0x2D: c = 'x'; break;
+            case 0x15: c = 'y'; break;
+            case 0x2C: c = 'z'; break;
 
-            /* numbers + shift symbols */
-            case 0x02: c = shift ? '!' : '1'; break;
-            case 0x03: c = shift ? '@' : '2'; break;
-            case 0x04: c = shift ? '#' : '3'; break;
-            case 0x05: c = shift ? '$' : '4'; break;
-            case 0x06: c = shift ? '%' : '5'; break;
-            case 0x07: c = shift ? '^' : '6'; break;
-            case 0x08: c = shift ? '&' : '7'; break;
-            case 0x09: c = shift ? '*' : '8'; break;
-            case 0x0A: c = shift ? '(' : '9'; break;
-            case 0x0B: c = shift ? ')' : '0'; break;
-
-            /* symbols */
-            case 0x0C: c = shift ? '_' : '-'; break;
-            case 0x0D: c = shift ? '+' : '='; break;
-
-            case 0x1A: c = shift ? '{' : '['; break;
-            case 0x1B: c = shift ? '}' : ']'; break;
-
-            case 0x27: c = shift ? ':' : ';'; break;
-            case 0x28: c = shift ? '"' : '\''; break;
-
-            case 0x33: c = shift ? '<' : ','; break;
-            case 0x34: c = shift ? '>' : '.'; break;
-            case 0x35: c = shift ? '?' : '/'; break;
+            /* numbers */
+            case 0x02: c = '1'; break;
+            case 0x03: c = '2'; break;
+            case 0x04: c = '3'; break;
+            case 0x05: c = '4'; break;
+            case 0x06: c = '5'; break;
+            case 0x07: c = '6'; break;
+            case 0x08: c = '7'; break;
+            case 0x09: c = '8'; break;
+            case 0x0A: c = '9'; break;
+            case 0x0B: c = '0'; break;
 
             case 0x39: c = ' '; break;
             case 0x1C: c = '\n'; break;
             case 0x0E: c = '\b'; break;
         }
 
-        if (c)
+        if (!c)
+            continue;
+
+        /* =========================
+           ENTER
+           ========================= */
+        if (c == '\n') {
+
+            buffer[len] = 0;
+
+            print("\n");
+            execute_command(buffer);
+
+            clear_buffer();
+            print_prompt();
+        }
+
+        /* =========================
+           BACKSPACE
+           ========================= */
+        else if (c == '\b') {
+
+            if (cursor > 0) {
+
+                cursor--;
+                len--;
+
+                for (int i = cursor; i < len; i++)
+                    buffer[i] = buffer[i + 1];
+
+                print_char('\b');
+            }
+        }
+
+        /* =========================
+           INSERT CHAR (MIDDLE SUPPORT)
+           ========================= */
+        else {
+
+            for (int i = len; i > cursor; i--)
+                buffer[i] = buffer[i - 1];
+
+            buffer[cursor] = c;
+
+            cursor++;
+            len++;
+
             print_char(c);
+        }
     }
 }
